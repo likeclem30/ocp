@@ -334,13 +334,13 @@ objects:
             GOGS_HOSTNAME="gogs-$CICD_NAMESPACE.$HOSTNAME"
 
             if [ "${EPHEMERAL}" == "true" ] ; then
-              oc new-app -f https://raw.githubusercontent.com/OpenShiftDemos/gogs-openshift-docker/master/openshift/gogs-template.yaml \
+              oc new-app -f https://raw.githubusercontent.com/likeclem30/ocp/main/template/gogs-template.yaml \
                   --param=GOGS_VERSION=0.11.34 \
                   --param=DATABASE_VERSION=9.6 \
                   --param=HOSTNAME=$GOGS_HOSTNAME \
                   --param=SKIP_TLS_VERIFY=true
             else
-              oc new-app -f https://raw.githubusercontent.com/OpenShiftDemos/gogs-openshift-docker/master/openshift/gogs-persistent-template.yaml \
+              oc new-app -f https://raw.githubusercontent.com/likeclem30/ocp/main/template/gogs-persistent-template.yaml \
                   --param=GOGS_VERSION=0.11.34 \
                   --param=DATABASE_VERSION=9.6 \
                   --param=HOSTNAME=$GOGS_HOSTNAME \
@@ -350,19 +350,19 @@ objects:
             sleep 5
 
             if [ "${EPHEMERAL}" == "true" ] ; then
-              oc new-app -f https://raw.githubusercontent.com/siamaksade/sonarqube/master/sonarqube-template.yml --param=SONARQUBE_MEMORY_LIMIT=2Gi
+              oc new-app -f https://raw.githubusercontent.com/likeclem30/ocp/main/template/sonarqube-template.yml --param=SONARQUBE_MEMORY_LIMIT=2Gi
             else
-              oc new-app -f https://raw.githubusercontent.com/siamaksade/sonarqube/master/sonarqube-persistent-template.yml --param=SONARQUBE_MEMORY_LIMIT=2Gi
+              oc new-app -f https://raw.githubusercontent.com/likeclem30/ocp/main/template/sonarqube-persistent-template.yml --param=SONARQUBE_MEMORY_LIMIT=2Gi
             fi
             
             oc set resources dc/sonardb --limits=cpu=200m,memory=512Mi --requests=cpu=50m,memory=128Mi
             oc set resources dc/sonarqube --limits=cpu=1,memory=2Gi --requests=cpu=50m,memory=128Mi
 
             if [ "${DEPLOY_CHE}" == "true" ] ; then
-              oc process -f https://raw.githubusercontent.com/minishift/minishift/master/addons/che/templates/che-workspace-service-account.yaml \
+              oc process -f https://raw.githubusercontent.com/likeclem30/ocp/main/template/che-workspace-service-account.yaml \
                   --param SERVICE_ACCOUNT_NAMESPACE=$CICD_NAMESPACE --param=SERVICE_ACCOUNT_NAME=che-workspace | oc create -f -
 
-              oc process -f https://raw.githubusercontent.com/minishift/minishift/master/addons/che/templates/che-server-template.yaml \
+              oc process -f https://raw.githubusercontent.com/likeclem30/ocp/main/template/che-server-template.yaml \
                 --param ROUTING_SUFFIX=$HOSTNAME \
                 --param CHE_MULTIUSER=false \
                 --param CHE_VERSION="6.19.0" \
@@ -373,9 +373,9 @@ objects:
             fi
 
             if [ "${EPHEMERAL}" == "true" ] ; then
-              oc new-app -f https://raw.githubusercontent.com/OpenShiftDemos/nexus/master/nexus3-template.yaml --param=NEXUS_VERSION=3.13.0 --param=MAX_MEMORY=2Gi
+              oc new-app -f https://raw.githubusercontent.com/likeclem30/ocp/main/template/nexus3-template.yaml --param=NEXUS_VERSION=3.13.0 --param=MAX_MEMORY=2Gi
             else
-              oc new-app -f https://raw.githubusercontent.com/OpenShiftDemos/nexus/master/nexus3-persistent-template.yaml --param=NEXUS_VERSION=3.13.0 --param=MAX_MEMORY=2Gi
+              oc new-app -f https://raw.githubusercontent.com/likeclem30/ocp/main/template/nexus3-persistent-template.yaml --param=NEXUS_VERSION=3.13.0 --param=MAX_MEMORY=2Gi
             fi
 
             oc set resources dc/nexus --requests=cpu=200m --limits=cpu=2
